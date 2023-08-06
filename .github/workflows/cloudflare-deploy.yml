@@ -39,13 +39,6 @@ jobs:
         with:
           name: build
           path: build/web
-      - name: 🎯 Deploy to firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JUSTITIS_B275E}}"
-          channelId: live
-          projectId: justitis-b275e
       - name: 🔥 Deploy to cloudflare
         uses: cloudflare/wrangler-action@2.0.0
         with:
