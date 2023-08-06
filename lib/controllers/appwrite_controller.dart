@@ -4,5 +4,6 @@ import 'package:justitis_app/providers/appwrite_provider.dart';
 
 class AppwriteController extends GetxController{
 
+  var name = ''.obs;
 
 }
