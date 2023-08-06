@@ -1,3 +1,3 @@
-# justitis_app
+# JustItis App
 
-A new Flutter project.
+This is the updated version of JustItis App
