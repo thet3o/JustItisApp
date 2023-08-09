@@ -25,6 +25,7 @@ class AppwriteProvider{
     //final sessionId = await account.getSession(sessionId: 'current');
     //account.deleteSession(sessionId: sessionId.$id);
     account.deleteSessions();
+    isLogged = false;
   }
 
   static checkIfUserHaveSession() async{

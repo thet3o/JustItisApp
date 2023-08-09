@@ -16,8 +16,10 @@ class HomeState extends State<Home>{
 
   @override
   void initState() {
-    AppwriteProvider.checkIfUserHaveSession();
     super.initState();
+    setState(() {
+      AppwriteProvider.checkIfUserHaveSession();
+    });
   }
 
   @override
