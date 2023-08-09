@@ -22,8 +22,9 @@ class AppwriteProvider{
   } 
 
   static deauth() async{
-    final sessionId = await account.getSession(sessionId: 'current');
-    account.deleteSession(sessionId: sessionId.$id);
+    //final sessionId = await account.getSession(sessionId: 'current');
+    //account.deleteSession(sessionId: sessionId.$id);
+    account.deleteSessions();
   }
 
   static checkIfUserHaveSession() async{
