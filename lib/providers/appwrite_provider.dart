@@ -6,7 +6,6 @@ class AppwriteProvider{
   static Client client = Client();
   static Account account = Account(AppwriteProvider.client);
   static Avatars avatar = Avatars(client);
-  bool _userIsLogged = false;
 
   void init() async{
     client.setEndpoint('https://backend.justitis.it:2053/v1')
@@ -39,12 +38,10 @@ class AppwriteProvider{
     }
   }
 
-  void checkIfLogged() async{
+  checkIfLogged() async{
     final prefs = await SharedPreferences.getInstance();
-    _userIsLogged = prefs.getBool('isLogged')!;
+    return prefs.getBool('isLogged');
   }
-
-  bool getIfLogged() => _userIsLogged;
 
   void setIfLogged(bool isLogged) async{
     final prefs = await SharedPreferences.getInstance();

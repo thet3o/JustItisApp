@@ -7,5 +7,5 @@ void main() {
   final appwriteProvider = AppwriteProvider();
   appwriteProvider.init();
   appwriteProvider.checkIfUserHaveSession();
-  runApp(MaterialApp(home: (!appwriteProvider.getIfLogged())? const Login() : const Home()));
+  runApp(MaterialApp(home: (appwriteProvider.checkIfLogged())? const Login() : const Home()));
 }

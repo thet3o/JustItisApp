@@ -18,12 +18,6 @@ class HomeState extends State<Home>{
   final appwriteProvider = AppwriteProvider();
 
   @override
-  void initState() {
-    super.initState();
-    appwriteProvider.checkIfLogged();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return AdvancedDrawer(
       controller:  advancedDrawerController,
@@ -67,27 +61,25 @@ class HomeState extends State<Home>{
                     },
                   )
                 ),
-                if(appwriteProvider.getIfLogged())...[
-                  ListTile(
+                ListTile(
+                onTap: () {},
+                leading: const FaIcon(FontAwesomeIcons.utensils),
+                title: const Text('I miei ordini'),
+                ),
+                ListTile(
                   onTap: () {},
-                  leading: const FaIcon(FontAwesomeIcons.utensils),
-                  title: const Text('I miei ordini'),
-                  ),
-                  ListTile(
-                    onTap: () {},
-                    leading: const FaIcon(FontAwesomeIcons.pizzaSlice),
-                    title: const Text('Ordina'),
-                  ),
-                  ListTile(
-                    onTap: () {},
-                    leading: const FaIcon(FontAwesomeIcons.wallet),
-                    title: const Text('Ricarica Wallet'),
-                  ),
-                ],
+                  leading: const FaIcon(FontAwesomeIcons.pizzaSlice),
+                  title: const Text('Ordina'),
+                ),
+                ListTile(
+                  onTap: () {},
+                  leading: const FaIcon(FontAwesomeIcons.wallet),
+                  title: const Text('Ricarica Wallet'),
+                ),
                 ListTile(
                   onTap: () {
                     appwriteProvider.deauth();
-                    if (!appwriteProvider.getIfLogged()){
+                    if (!appwriteProvider.checkIfLogged()){
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const Login(),

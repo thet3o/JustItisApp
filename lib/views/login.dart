@@ -27,8 +27,7 @@ class LoginState extends State<Login>{
         ElevatedButton(
           onPressed: () {
             appwriteProvider.auth();
-            appwriteProvider.checkIfLogged();
-            if (appwriteProvider.getIfLogged()){
+            if (appwriteProvider.checkIfLogged()){
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => const Home()
