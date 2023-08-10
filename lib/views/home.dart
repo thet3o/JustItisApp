@@ -62,9 +62,9 @@ class HomeState extends State<Home>{
                   )
                 ),
                 ListTile(
-                onTap: () {},
-                leading: const FaIcon(FontAwesomeIcons.utensils),
-                title: const Text('I miei ordini'),
+                  onTap: () {},
+                  leading: const FaIcon(FontAwesomeIcons.utensils),
+                  title: const Text('I miei ordini'),
                 ),
                 ListTile(
                   onTap: () {},
