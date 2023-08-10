@@ -27,10 +27,12 @@ class LoginState extends State<Login>{
         ElevatedButton(
           onPressed: () {
             appwriteProvider.auth();
-            Navigator.push(
+            if (appwriteProvider.checkIfLogged() as bool){
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const Home())
-            );
+              );
+            }
           },
           child: const Text('Login'),
         )
