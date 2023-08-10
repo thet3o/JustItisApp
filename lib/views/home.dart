@@ -80,8 +80,10 @@ class HomeState extends State<Home>{
                   onTap: () {
                     appwriteProvider.deauth();
                     if (appwriteProvider.checkIfLogged() != true){
-                      Navigator.pop(context);
-                    }
+                      Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => const Login())
+                      );
+                    } 
                   },
                   leading: const FaIcon(FontAwesomeIcons.rightFromBracket),
                   title: const Text('Logout'),
