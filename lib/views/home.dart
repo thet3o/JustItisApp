@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:justitis_app/providers/appwrite_provider.dart';
+import 'package:justitis_app/views/login.dart';
 
 
 class Home extends StatefulWidget{
+  const Home({super.key});
 
   @override
   State<Home> createState() => HomeState();
@@ -13,13 +15,12 @@ class Home extends StatefulWidget{
 class HomeState extends State<Home>{
 
   final advancedDrawerController = AdvancedDrawerController();
+  final appwriteProvider = AppwriteProvider();
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      AppwriteProvider.checkIfUserHaveSession();
-    });
+    appwriteProvider.checkIfLogged();
   }
 
   @override
@@ -66,30 +67,36 @@ class HomeState extends State<Home>{
                     },
                   )
                 ),
-                if(AppwriteProvider.isLogged)
-                ListTile(
+                if(appwriteProvider.getIfLogged())...[
+                  ListTile(
                   onTap: () {},
                   leading: const FaIcon(FontAwesomeIcons.utensils),
                   title: const Text('I miei ordini'),
-                ),
-                if(AppwriteProvider.isLogged)
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    leading: const FaIcon(FontAwesomeIcons.pizzaSlice),
+                    title: const Text('Ordina'),
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    leading: const FaIcon(FontAwesomeIcons.wallet),
+                    title: const Text('Ricarica Wallet'),
+                  ),
+                ],
                 ListTile(
-                  onTap: () {},
-                  leading: const FaIcon(FontAwesomeIcons.pizzaSlice),
-                  title: const Text('Ordina'),
-                ),
-                if(AppwriteProvider.isLogged)
-                ListTile(
-                  onTap: () {},
-                  leading: const FaIcon(FontAwesomeIcons.wallet),
-                  title: const Text('Ricarica Wallet'),
-                ),
-                ListTile(
-                  onTap: () => setState(() {
-                    (!AppwriteProvider.isLogged)?AppwriteProvider.auth():AppwriteProvider.deauth();
-                  }),
-                  leading: FaIcon((!AppwriteProvider.isLogged)?FontAwesomeIcons.rightToBracket:FontAwesomeIcons.rightFromBracket),
-                  title: Text((!AppwriteProvider.isLogged)?'Login':'Logout'),
+                  onTap: () {
+                    appwriteProvider.deauth();
+                    if (!appwriteProvider.getIfLogged()){
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const Login(),
+                        )
+                      );
+                    }
+                  },
+                  leading: const FaIcon(FontAwesomeIcons.rightFromBracket),
+                  title: const Text('Logout'),
                 ),
               ],
             ),
