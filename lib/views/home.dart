@@ -79,11 +79,8 @@ class HomeState extends State<Home>{
                 ListTile(
                   onTap: () {
                     appwriteProvider.deauth();
-                    if (!appwriteProvider.checkIfLogged()){
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Login())
-                      );
+                    if (appwriteProvider.checkIfLogged() != true){
+                      Navigator.pop(context);
                     }
                   },
                   leading: const FaIcon(FontAwesomeIcons.rightFromBracket),
