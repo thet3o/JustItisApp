@@ -80,10 +80,9 @@ class HomeState extends State<Home>{
                   onTap: () {
                     appwriteProvider.deauth();
                     if (!appwriteProvider.checkIfLogged()){
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const Login(),
-                        )
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Login())
                       );
                     }
                   },

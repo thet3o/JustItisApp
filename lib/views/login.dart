@@ -28,10 +28,9 @@ class LoginState extends State<Login>{
           onPressed: () {
             appwriteProvider.auth();
             if (appwriteProvider.checkIfLogged()){
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const Home()
-                )
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const Home())
               );
             }
           },
