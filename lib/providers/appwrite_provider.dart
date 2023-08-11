@@ -1,53 +1,69 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AppwriteProvider{
-  static Client client = Client();
-  static Account account = Account(AppwriteProvider.client);
-  static Avatars avatar = Avatars(client);
+
+enum AuthStatus{
+  uninit, auth, unauth
+}
+
+class AppwriteProvider extends ChangeNotifier{
+  Client client = Client();
+  //Account account = Account(AppwriteProvider.client);
+  late final Account account;
+  //Avatars avatar = Avatars(client);
+  late final Avatars avatar;
+
+  late User _currentUser;
+
+  AuthStatus _authStatus = AuthStatus.uninit;
+
+
+  // Getter
+  User get currentUser => _currentUser;
+  AuthStatus get authStatus => _authStatus;
+
+  AppwriteProvider(){
+    init();
+    checkIfLogged();
+  }
 
   void init() async{
     client.setEndpoint('https://backend.justitis.it:2053/v1')
     .setProject('64c6156149b8d74d0fe4')
     .setSelfSigned();
+    account = Account(client);
+    avatar = Avatars(client);
   }
 
-  void auth() async {
-    await account.createOAuth2Session(provider: 'google', success: 'https://test.justitis.it/auth.html');
-    setIfLogged(true);
-  } 
-
-  void deauth() async{
-    //final sessionId = await account.getSession(sessionId: 'current');
-    //account.deleteSession(sessionId: sessionId.$id);
-    account.deleteSessions();
-    setIfLogged(false);
-  }
-
-  void checkIfUserHaveSession() async{
-    try {
-      await account.get();
-      setIfLogged(true);
-      checkIfLogged();
-    } on AppwriteException catch(e) {
-      if(e.code == 401) {
-      } else {
-        // errors like connection
-      }
+  void checkIfLogged() async{
+    try{
+      _currentUser = await account.get();
+      _authStatus = AuthStatus.auth;
+    }catch(e){
+      _authStatus = AuthStatus.unauth;
+    }finally{
+      notifyListeners();
     }
   }
 
-  checkIfLogged() async{
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('isLogged');
+  void logIn() async{
+    try{
+      final session = await account.createOAuth2Session(provider: 'google', success: 'https://test.justitis.it/auth.html');
+      _currentUser = await account.get();
+      _authStatus = AuthStatus.auth;
+    }finally{
+      notifyListeners();
+    }
   }
 
-  void setIfLogged(bool isLogged) async{
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLogged', isLogged);
+  void logOut() async{
+    try{
+      await account.deleteSession(sessionId: 'current');
+      _authStatus = AuthStatus.unauth;
+    }finally{
+      notifyListeners();
+    }
   }
-
-  static Future<User> getUser() async => await account.get();
-
 }

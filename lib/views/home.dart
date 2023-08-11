@@ -3,6 +3,7 @@ import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:justitis_app/providers/appwrite_provider.dart';
 import 'package:justitis_app/views/login.dart';
+import 'package:provider/provider.dart';
 
 
 class Home extends StatefulWidget{
@@ -19,6 +20,7 @@ class HomeState extends State<Home>{
 
   @override
   Widget build(BuildContext context) {
+    final AppwriteProvider appwriteProvider = context.read<AppwriteProvider>();
     return AdvancedDrawer(
       controller:  advancedDrawerController,
       animationCurve: Curves.easeInOut,
@@ -55,7 +57,7 @@ class HomeState extends State<Home>{
                     shape: BoxShape.circle,
                   ),
                   child: FutureBuilder(
-                    future: AppwriteProvider.avatar.getInitials(),
+                    future: appwriteProvider.avatar.getInitials(),
                     builder: (context, snapshot) {
                       return snapshot.hasData && snapshot.data != null ? Image.memory(snapshot.data!) : const CircularProgressIndicator();
                     },
@@ -77,13 +79,14 @@ class HomeState extends State<Home>{
                   title: const Text('Ricarica Wallet'),
                 ),
                 ListTile(
-                  onTap: () {
-                    appwriteProvider.deauth();
-                    if (appwriteProvider.checkIfLogged() != true){
-                      Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => const Login())
-                      );
-                    } 
+                  onTap: (){
+                    try{
+                      appwriteProvider.logOut();
+                    }finally{
+                      if(appwriteProvider.authStatus == AuthStatus.unauth){
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Login()));
+                      }
+                    }
                   },
                   leading: const FaIcon(FontAwesomeIcons.rightFromBracket),
                   title: const Text('Logout'),

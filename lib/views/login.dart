@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:justitis_app/providers/appwrite_provider.dart';
 import 'package:justitis_app/views/home.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget{
   const Login({super.key});
@@ -10,11 +11,9 @@ class Login extends StatefulWidget{
 }
 
 class LoginState extends State<Login>{
-
-  final appwriteProvider = AppwriteProvider();
-
   @override
   Widget build(BuildContext context) {
+    final AppwriteProvider appwriteProvider = Provider.of<AppwriteProvider>(context, listen: true);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -25,13 +24,10 @@ class LoginState extends State<Login>{
           child: Text('JustItis'),
         ),
         ElevatedButton(
-          onPressed: () {
-            appwriteProvider.auth();
-            if (appwriteProvider.checkIfLogged() as bool){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Home())
-              );
+          onPressed: (){
+            appwriteProvider.logIn();
+            if(appwriteProvider.authStatus == AuthStatus.auth){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Home()));
             }
           },
           child: const Text('Login'),
