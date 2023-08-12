@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:justitis_app/providers/appwrite_provider.dart';
 import 'package:justitis_app/views/login.dart';
 import 'package:provider/provider.dart';
+import 'menu/menu.dart';
 
 
 class Home extends StatefulWidget{
@@ -21,10 +22,11 @@ class HomeState extends State<Home>{
   @override
   Widget build(BuildContext context) {
     final AppwriteProvider appwriteProvider = context.read<AppwriteProvider>();
+    final double wallet = context.watch<AppwriteProvider>().wallet;
     return AdvancedDrawer(
-      controller:  advancedDrawerController,
-      animationCurve: Curves.easeInOut,
-      animationDuration: const Duration(milliseconds: 300),
+      controller: advancedDrawerController,
+      animationCurve: Curves.easeInOutCubicEmphasized,
+      animationDuration: const Duration(milliseconds: 500),
       animateChildDecoration: true,
       childDecoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16))
@@ -69,7 +71,10 @@ class HomeState extends State<Home>{
                   title: const Text('I miei ordini'),
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    advancedDrawerController.hideDrawer();
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Menu()));
+                  },
                   leading: const FaIcon(FontAwesomeIcons.pizzaSlice),
                   title: const Text('Ordina'),
                 ),
@@ -97,13 +102,24 @@ class HomeState extends State<Home>{
         ),
       ),
       child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
           title: const Text('JustItis'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           leading: IconButton(
             onPressed: () => advancedDrawerController.toggleDrawer(),
             icon: const FaIcon(FontAwesomeIcons.bars),
           ),
         ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Il tuo saldo: ${wallet}'),
+            ],
+          ),
+        )
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 
 enum AuthStatus{
@@ -14,8 +13,11 @@ class AppwriteProvider extends ChangeNotifier{
   late final Account account;
   //Avatars avatar = Avatars(client);
   late final Avatars avatar;
+  late final Databases database;
 
   late User _currentUser;
+
+  double _wallet = 0.0;
 
   AuthStatus _authStatus = AuthStatus.uninit;
 
@@ -23,6 +25,8 @@ class AppwriteProvider extends ChangeNotifier{
   // Getter
   User get currentUser => _currentUser;
   AuthStatus get authStatus => _authStatus;
+  double get wallet => _wallet;
+  
 
   AppwriteProvider(){
     init();
@@ -35,14 +39,26 @@ class AppwriteProvider extends ChangeNotifier{
     .setSelfSigned();
     account = Account(client);
     avatar = Avatars(client);
+    database = Databases(client);
   }
 
   void checkIfLogged() async{
     try{
       _currentUser = await account.get();
       _authStatus = AuthStatus.auth;
+      updateWallet();
     }catch(e){
       _authStatus = AuthStatus.unauth;
+    }finally{
+      notifyListeners();
+    }
+  }
+
+  void updateWallet() async{
+    try{
+      var result = await database.getDocument(databaseId: '64c624390f8d5b123bdc', collectionId: '64d295100d412a890d19', documentId: _currentUser.$id);
+      var document = result.toMap();
+      _wallet = (document['data']['balance'] + 0.0);
     }finally{
       notifyListeners();
     }
@@ -53,6 +69,7 @@ class AppwriteProvider extends ChangeNotifier{
       final session = await account.createOAuth2Session(provider: 'google', success: 'https://test.justitis.it/auth.html');
       _currentUser = await account.get();
       _authStatus = AuthStatus.auth;
+      updateWallet();
     }finally{
       notifyListeners();
     }
