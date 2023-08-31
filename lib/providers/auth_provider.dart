@@ -34,7 +34,7 @@ class AuthProvider extends ChangeNotifier{
 
   //Local Server
   final String _userCollectionId = 'users';
-  final String _successRedirectUrl = 'http://localhost:59771/auth.html';
+  final String _successRedirectUrl = 'http://test.justitis.it/auth.html';
 
   AuthProvider(){
     checkIfLogged();
