@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:justitis_app/providers/appwrite_provider.dart';
+import 'package:justitis_app/providers/auth_provider.dart';
 import 'package:justitis_app/providers/menu_provider.dart';
+import 'package:justitis_app/providers/myorders_provider.dart';
+import 'package:justitis_app/services/appwrite_service.dart';
 import 'package:justitis_app/views/home.dart';
 import 'package:justitis_app/views/login.dart';
 import 'package:provider/provider.dart';
 
 void main() async{
+  AppwriteService();
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AppwriteProvider()),
-        ChangeNotifierProvider(create: (_) => MenuProvider())
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => MenuProvider()),
+        ChangeNotifierProvider(create: (_) => MyOrdersProvider())
       ],
       child: const JustItisApp(),
     )
@@ -22,7 +26,7 @@ class JustItisApp extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final authStatus = context.watch<AppwriteProvider>().authStatus;
+    final authStatus = context.watch<AuthProvider>().authStatus;
     return MaterialApp(
       title: 'JustItisApp',
       debugShowCheckedModeBanner: false,

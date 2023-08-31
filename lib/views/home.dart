@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:justitis_app/providers/appwrite_provider.dart';
+import 'package:justitis_app/providers/auth_provider.dart';
+import 'package:justitis_app/services/appwrite_service.dart';
 import 'package:justitis_app/views/login.dart';
+import 'package:justitis_app/views/myorders.dart';
+import 'package:justitis_app/views/wallet.dart';
 import 'package:provider/provider.dart';
 import 'menu/menu.dart';
 
@@ -17,12 +20,12 @@ class Home extends StatefulWidget{
 class HomeState extends State<Home>{
 
   final advancedDrawerController = AdvancedDrawerController();
-  final appwriteProvider = AppwriteProvider();
+  final appwriteProvider = AuthProvider();
 
   @override
   Widget build(BuildContext context) {
-    final AppwriteProvider appwriteProvider = context.read<AppwriteProvider>();
-    final double wallet = context.watch<AppwriteProvider>().wallet;
+    final AuthProvider appwriteProvider = context.read<AuthProvider>();
+    final double wallet = context.watch<AuthProvider>().wallet;
     return AdvancedDrawer(
       controller: advancedDrawerController,
       animationCurve: Curves.easeInOutCubicEmphasized,
@@ -59,29 +62,35 @@ class HomeState extends State<Home>{
                     shape: BoxShape.circle,
                   ),
                   child: FutureBuilder(
-                    future: appwriteProvider.avatar.getInitials(),
+                    future: AppwriteService.avatar.getInitials(),
                     builder: (context, snapshot) {
                       return snapshot.hasData && snapshot.data != null ? Image.memory(snapshot.data!) : const CircularProgressIndicator();
                     },
                   )
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    advancedDrawerController.hideDrawer();
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const MyOrders()));
+                  },
                   leading: const FaIcon(FontAwesomeIcons.utensils),
                   title: const Text('I miei ordini'),
                 ),
                 ListTile(
                   onTap: () {
                     advancedDrawerController.hideDrawer();
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Menu()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Menu()));
                   },
                   leading: const FaIcon(FontAwesomeIcons.pizzaSlice),
                   title: const Text('Ordina'),
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    advancedDrawerController.hideDrawer();
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Wallet()));
+                  },
                   leading: const FaIcon(FontAwesomeIcons.wallet),
-                  title: const Text('Ricarica Wallet'),
+                  title: const Text('Wallet'),
                 ),
                 ListTile(
                   onTap: (){

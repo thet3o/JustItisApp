@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:justitis_app/providers/menu_provider.dart';
-import 'package:justitis_app/views/menu/category.dart';
-import 'package:justitis_app/views/menu/categoryMenu.dart';
+import 'package:justitis_app/views/menu/cart.dart';
+import 'package:justitis_app/views/menu/submenu.dart';
 import 'package:provider/provider.dart';
 
 class Menu extends StatefulWidget{
@@ -12,26 +12,21 @@ class Menu extends StatefulWidget{
   MenuState createState() => MenuState();
 }
 
-class MenuState extends State<Menu> with TickerProviderStateMixin{
-
-  late final TabController tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    tabController = TabController(length: 3, vsync: this);
-  }
-
+class MenuState extends State<Menu>{
   @override
   Widget build(BuildContext context) {
-    final currentScreen =  context.watch<MenuProvider>().currentScreen;
     final menuProvider = context.read<MenuProvider>();
-
+    final cart = context.watch<MenuProvider>().cart;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ordina'),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading: IconButton(
+          onPressed: (){
+            Navigator.pop(context);
+          },
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft)),
       ),
       body: Center(
         child: Column(
@@ -47,7 +42,9 @@ class MenuState extends State<Menu> with TickerProviderStateMixin{
                     borderRadius: BorderRadius.circular(10)
                   ),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SubMenu(categories: [IngredientCategory.panino, IngredientCategory.pns])));
+                    },
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -64,7 +61,9 @@ class MenuState extends State<Menu> with TickerProviderStateMixin{
                     borderRadius: BorderRadius.circular(10)
                   ),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SubMenu(categories: [IngredientCategory.bevande])));
+                    },
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -86,7 +85,9 @@ class MenuState extends State<Menu> with TickerProviderStateMixin{
                     borderRadius: BorderRadius.circular(10)
                   ),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SubMenu(categories: [IngredientCategory.prodottoDelGiorno])));
+                    },
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -103,7 +104,9 @@ class MenuState extends State<Menu> with TickerProviderStateMixin{
                     borderRadius: BorderRadius.circular(10)
                   ),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SubMenu(categories: [IngredientCategory.snack])));
+                    },
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -118,6 +121,12 @@ class MenuState extends State<Menu> with TickerProviderStateMixin{
           ],
         ),
       ),
+      floatingActionButton: (cart.isNotEmpty)?
+      FloatingActionButton.extended(
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const Cart()));
+        },
+        label: Text('${cart.length} Completa l\'ordine')):null,
     );
   }
 }

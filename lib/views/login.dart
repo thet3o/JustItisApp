@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:justitis_app/providers/appwrite_provider.dart';
+import 'package:justitis_app/providers/auth_provider.dart';
 import 'package:justitis_app/views/home.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +13,7 @@ class Login extends StatefulWidget{
 class LoginState extends State<Login>{
   @override
   Widget build(BuildContext context) {
-    final AppwriteProvider appwriteProvider = Provider.of<AppwriteProvider>(context, listen: true);
+    final AuthProvider appwriteProvider = Provider.of<AuthProvider>(context, listen: true);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
