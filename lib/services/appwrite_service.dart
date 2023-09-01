@@ -8,7 +8,7 @@ class AppwriteService{
   static late final Functions _functions;
 
   //Remote
-  final String _endpoint = 'http://backend.justitis.it/v1';
+  final String _endpoint = 'https://backend.justitis.it:2053/v1';
   static const String databaseId = 'justitisdb';
 
   //Local
