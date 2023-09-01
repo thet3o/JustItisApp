@@ -47,7 +47,7 @@ class MenuProvider extends ChangeNotifier{
         'order': jsonOrderData
       });
       await AppwriteService.functions.createExecution(
-        functionId: '64dbddfdc187452125e5',
+        functionId: '64f1f25f8f2cfaa0d2f7',
         data: jsonData
         );
       _isOrderCreated = true;

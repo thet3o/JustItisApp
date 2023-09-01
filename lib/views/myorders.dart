@@ -14,6 +14,8 @@ class MyOrdersState extends State<MyOrders>{
   @override
   Widget build(BuildContext context) {
     final myOrdersProvider = context.read<MyOrdersProvider>();
+    final orders = context.watch<MyOrdersProvider>().orders;
+    myOrdersProvider.updateOrdersList();
     return Scaffold(
       appBar: AppBar(
         title: const Text('I miei ordini'),
@@ -29,9 +31,20 @@ class MyOrdersState extends State<MyOrders>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(onPressed: (){
-              myOrdersProvider.updateOrdersList();
-            }, child: const Text('try'))
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: orders.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      title: Text(orders[index].mainProduct.name),
+                      subtitle: Text(orders[index].groupId.toString()),
+                    ),
+                  );
+                },
+              ),
+            )
           ],
         ),
       ),
