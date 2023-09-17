@@ -55,6 +55,7 @@ class Order{
   });
 
   factory Order.fromJson(Map<String, dynamic> json){
+    print(json);
     return Order(
       groupId: json['idGroup'], 
       mainProduct: Ingredient.fromJson(jsonDecode(json['mainProduct'])), 

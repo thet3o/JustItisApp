@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:justitis_app/providers/menu_provider.dart';
+import 'package:justitis_app/views/menu/customization.dart';
 import 'package:provider/provider.dart';
 
 class SubMenu extends StatefulWidget{
@@ -45,7 +46,9 @@ class SubMenuState extends State<SubMenu>{
                       if(IngredientCategory.values[ingredients[index].productType.idProductType] != IngredientCategory.panino){
                         menuProvider.addOrder(ingredients[index]);
                         Navigator.pop(context);
-                      }else{}
+                      }else{
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Customization(mainProduct: ingredients[index])));
+                      }
                     },
                     title: Text(ingredients[index].name),
                     subtitle: Text(NumberFormat.currency(locale:'eu').format(ingredients[index].price)),

@@ -13,9 +13,7 @@ class MyOrders extends StatefulWidget{
 class MyOrdersState extends State<MyOrders>{
   @override
   Widget build(BuildContext context) {
-    final myOrdersProvider = context.read<MyOrdersProvider>();
     final orders = context.watch<MyOrdersProvider>().orders;
-    myOrdersProvider.updateOrdersList();
     return Scaffold(
       appBar: AppBar(
         title: const Text('I miei ordini'),

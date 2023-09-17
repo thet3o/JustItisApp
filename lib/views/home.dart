@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:justitis_app/providers/auth_provider.dart';
+import 'package:justitis_app/providers/myorders_provider.dart';
 import 'package:justitis_app/services/appwrite_service.dart';
 import 'package:justitis_app/views/login.dart';
 import 'package:justitis_app/views/myorders.dart';
@@ -26,6 +27,7 @@ class HomeState extends State<Home>{
   Widget build(BuildContext context) {
     final AuthProvider appwriteProvider = context.read<AuthProvider>();
     final double wallet = context.watch<AuthProvider>().wallet;
+    final myOrdersProvider = context.read<MyOrdersProvider>();
     return AdvancedDrawer(
       controller: advancedDrawerController,
       animationCurve: Curves.easeInOutCubicEmphasized,
@@ -71,6 +73,7 @@ class HomeState extends State<Home>{
                 ListTile(
                   onTap: () {
                     advancedDrawerController.hideDrawer();
+                    myOrdersProvider.updateOrdersList();
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const MyOrders()));
                   },
                   leading: const FaIcon(FontAwesomeIcons.utensils),
