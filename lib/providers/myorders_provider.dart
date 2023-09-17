@@ -20,6 +20,7 @@ class MyOrdersProvider extends ChangeNotifier{
       var count = 0;
       final user = await AppwriteService.account.get();
       final summariesResult = await AppwriteService.database.listDocuments(databaseId: AppwriteService.databaseId, collectionId: 'order-summaries', queries: [Query.equal('user', user.$id)]);
+      _orders.clear();
       for(var doc in summariesResult.documents){
         /*
           Manage detailed ordera with the condition if an complete order is single or composite meaning that 
