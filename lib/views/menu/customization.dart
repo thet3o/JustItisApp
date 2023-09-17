@@ -46,7 +46,6 @@ class CustomizationState extends State<Customization>{
                       title: Text(availableFillings[index].name),
                       trailing: IconButton(onPressed: (){
                         orderFillings.add(availableFillings[index]);
-                        print('Added');
                       }, icon: const FaIcon(FontAwesomeIcons.plus)),
                     ),
                   );

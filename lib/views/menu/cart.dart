@@ -15,7 +15,6 @@ class CartState extends State<Cart>{
   Widget build(BuildContext context) {
     final menuProvider = context.read<MenuProvider>();
     final cart = context.watch<MenuProvider>().cart;
-    final isOrderCreated = context.watch<MenuProvider>().isOrderCreated;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Il tuo ordine'),

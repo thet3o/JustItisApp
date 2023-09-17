@@ -55,7 +55,6 @@ class Order{
   });
 
   factory Order.fromJson(Map<String, dynamic> json){
-    print(json);
     return Order(
       groupId: json['idGroup'], 
       mainProduct: Ingredient.fromJson(jsonDecode(json['mainProduct'])), 
@@ -69,4 +68,22 @@ class Order{
     'fillings': (fillings.isNotEmpty)?fillings.map((e) => e.id).toList():[],
     'additions': (additions.isNotEmpty)?additions.map((e) => e.id).toList():[]
   };
+}
+
+enum OrderStatus{
+  scheduled, preparing, ready2take, delivering, delivered, completed
+}
+
+class SummarizedOrder{
+  final String id;
+  final List<Order> orders;
+  final double totalPrice;
+  final OrderStatus status;
+
+  SummarizedOrder({
+    required this.id,
+    required this.orders,
+    required this.totalPrice,
+    required this.status
+  });
 }

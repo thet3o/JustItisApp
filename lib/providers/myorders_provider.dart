@@ -6,9 +6,11 @@ import 'package:justitis_app/providers/menu_provider.dart';
 import 'package:justitis_app/services/appwrite_service.dart';
 
 class MyOrdersProvider extends ChangeNotifier{
-  final List<Order> _orders = [];
+  //final List<Order> _orders = [];
+  List<SummarizedOrder> _summarizedOrders = [];
 
-  List<Order> get orders => _orders;
+  //List<Order> get orders => _orders;
+  List<SummarizedOrder> get summarizedOrders => _summarizedOrders;
 
   Future<Document> getDetailedOrder(String id) async{
     final detailedOrder = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'detailed-orders', documentId: id);
@@ -17,11 +19,11 @@ class MyOrdersProvider extends ChangeNotifier{
 
   void updateOrdersList() async{
     try{
-      var count = 0;
       final user = await AppwriteService.account.get();
       final summariesResult = await AppwriteService.database.listDocuments(databaseId: AppwriteService.databaseId, collectionId: 'order-summaries', queries: [Query.equal('user', user.$id)]);
-      _orders.clear();
+      _summarizedOrders.clear();
       for(var doc in summariesResult.documents){
+        final List<Order> orders = [];
         /*
           Manage detailed ordera with the condition if an complete order is single or composite meaning that 
           a complete order can contain single or multiple detailed orders
@@ -40,7 +42,7 @@ class MyOrdersProvider extends ChangeNotifier{
               additions.add(ingredient);
             }
           }
-          _orders.add(Order(
+          orders.add(Order(
               groupId: idGroup,
               mainProduct: mainProduct,
               fillings: fillings,
@@ -49,17 +51,22 @@ class MyOrdersProvider extends ChangeNotifier{
         }else{
           final mainProduct = Ingredient.fromJson((await getDetailedOrder(doc.data['completedOrder']['detailedOrders'][0]['\$id'])).data['ingredient']);
           final idGroup = doc.data['completedOrder']['detailedOrders'][0]['idGroup'];
-          _orders.add(Order(
+          orders.add(Order(
             groupId: idGroup,
             mainProduct: mainProduct,
             fillings: [],
             additions: []
           ));
         }
-        count += 1;
+        _summarizedOrders.add(SummarizedOrder(
+          id: doc.data['\$id'],
+          orders: orders,
+          totalPrice: doc.data['price'], 
+          status: OrderStatus.values.byName(doc.data['orderStatus'])
+        ));
       }
+      _summarizedOrders = _summarizedOrders.reversed.toList();
     }finally{
-      //print(orders);
       notifyListeners();
     }
   }
