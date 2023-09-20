@@ -11,7 +11,6 @@ class FCMService{
   FCMService(){
     messaging = FirebaseMessaging.instance;
     requestPermission();
-    getToken();
   }
 
   void requestPermission() async{
@@ -26,7 +25,7 @@ class FCMService{
     );
   }
 
-  void getToken() async{
+  static void getToken() async{
     token = (await messaging.getToken(vapidKey: "BMxkL_37yjIRiVe0j-n-gdxNwT73BRhOY91aiz7v-tM9KgdGmKs9EN7w8uWecmR3BdUUFxm0qhIrBGM8A-VCTtg"))!;
   }
 

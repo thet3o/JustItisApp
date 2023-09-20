@@ -16,7 +16,6 @@ void main() async{
   options: DefaultFirebaseOptions.currentPlatform,
   );
   AppwriteService();
-  FCMService();
   runApp(
     MultiProvider(
       providers: [

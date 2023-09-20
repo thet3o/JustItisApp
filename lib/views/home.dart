@@ -141,7 +141,13 @@ class HomeState extends State<Home>{
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Il tuo saldo: ${wallet}'),
-              ElevatedButton(onPressed: () => setFCMTkn(), child: const Text('Notifiche'))
+              ElevatedButton(onPressed: () => FCMService(), child: const Text('Init')),
+              ElevatedButton(onPressed: (){
+                FCMService.getToken();
+              }, child: const Text('Get token')),
+              ElevatedButton(onPressed: () {
+                setFCMTkn();
+              }, child: const Text('Notifiche'))
             ],
           ),
         )
