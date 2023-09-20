@@ -71,7 +71,7 @@ class Order{
 }
 
 enum OrderStatus{
-  scheduled, preparing, ready2take, delivering, delivered, completed
+  scheduled, preparing, readytotake, delivering, delivered, completed
 }
 
 class SummarizedOrder{
