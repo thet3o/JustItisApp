@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:justitis_app/providers/auth_provider.dart';
 import 'package:justitis_app/providers/myorders_provider.dart';
 import 'package:justitis_app/services/appwrite_service.dart';
+import 'package:justitis_app/services/fcm_service.dart';
 import 'package:justitis_app/views/login.dart';
 import 'package:justitis_app/views/myorders.dart';
 import 'package:justitis_app/views/wallet.dart';
@@ -22,6 +23,17 @@ class HomeState extends State<Home>{
 
   final advancedDrawerController = AdvancedDrawerController();
   final appwriteProvider = AuthProvider();
+
+  void setFCMTkn() async{
+    final user = await AppwriteService.account.get();
+    FCMService.setTokenToUser(user.$id);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setFCMTkn();
+  }
 
   @override
   Widget build(BuildContext context) {

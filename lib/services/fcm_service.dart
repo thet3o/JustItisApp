@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:justitis_app/services/appwrite_service.dart';
 
 class FCMService{
   static late FirebaseMessaging messaging;
   static late NotificationSettings settings;
-  String token = "";
+  static String token = "";
 
   FCMService(){
     messaging = FirebaseMessaging.instance;
@@ -25,6 +28,15 @@ class FCMService{
 
   void getToken() async{
     token = (await messaging.getToken(vapidKey: "BMxkL_37yjIRiVe0j-n-gdxNwT73BRhOY91aiz7v-tM9KgdGmKs9EN7w8uWecmR3BdUUFxm0qhIrBGM8A-VCTtg"))!;
-    print(token);
+  }
+
+  static void setTokenToUser(String userId) async{
+    await AppwriteService.functions.createExecution(
+      functionId: '650b5d07bcf5bc3a4c8d',
+      data: jsonEncode({
+        'userId': userId,
+        'fcm_token': token
+      })
+    );
   }
 }
