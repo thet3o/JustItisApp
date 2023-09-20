@@ -40,9 +40,32 @@
   <script src="flutter.js" defer></script>
 </head>
 <body>
+  <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script>
+      var firebaseConfig = {
+        apiKey: "AIzaSyA99HRQhOpoCTirxZxFEKiGk9uL7PTMvgQ",
+        authDomain: "justitis-b275e.firebaseapp.com",
+        projectId: "justitis-b275e",
+        storageBucket: "justitis-b275e.appspot.com",
+        messagingSenderId: "977297428392",
+        appId: "1:977297428392:web:29a7a7a70e4a757c8f579d",
+        measurementId: "G-P54X9HW32V"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("firebase-messaging-sw.js");
+        });
+      }
+    </script>
   <script>
     window.addEventListener('load', function(ev) {
-      navigator.serviceWorker.register('firebase-messaging-sw.js');
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
@@ -56,12 +79,5 @@
       });
     });
   </script>
-  <!--<script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", function () {
-        navigator.serviceWorker.register("firebase-messaging-sw.js");
-      });
-    }
-  </script>-->
 </body>
 </html>

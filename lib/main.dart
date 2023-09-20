@@ -12,10 +12,10 @@ import 'firebase_options.dart';
 
 
 void main() async{
-  AppwriteService();
   await Firebase.initializeApp(
   options: DefaultFirebaseOptions.currentPlatform,
   );
+  AppwriteService();
   FCMService();
   runApp(
     MultiProvider(
