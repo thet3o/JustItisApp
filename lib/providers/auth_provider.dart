@@ -13,6 +13,7 @@ class AuthProvider extends ChangeNotifier{
 
   double _wallet = 0.0;
   double _moneyToAdd = 0.0;
+  bool _isFirstLogin = true;
 
   AuthStatus _authStatus = AuthStatus.uninit;
 
@@ -21,8 +22,10 @@ class AuthProvider extends ChangeNotifier{
   AuthStatus get authStatus => _authStatus;
   double get wallet => _wallet;
   double get moneyToAdd => _moneyToAdd;
+  bool get isFirstLogin => _isFirstLogin;
 
   set moneyToAdd(double money) => _moneyToAdd = money;
+
 
   //Appwrite constants
 
@@ -32,7 +35,7 @@ class AuthProvider extends ChangeNotifier{
 
   //Local Server
   final String _userCollectionId = 'users';
-  final String _successRedirectUrl = 'http://justitis.it/auth.html';
+  final String _successRedirectUrl = 'http://localhost:62092/auth.html';
 
   AuthProvider(){
     checkIfLogged();
@@ -43,6 +46,13 @@ class AuthProvider extends ChangeNotifier{
       _currentUser = await AppwriteService.account.get();
       _authStatus = AuthStatus.auth;
       updateWallet();
+      final userdb = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'users', documentId: _currentUser.$id);
+      print(userdb.data['class']);
+      if (userdb.data['class'] == null){
+        _isFirstLogin = true;
+      }else{
+        _isFirstLogin = false;
+      }
     }catch(e){
       _authStatus = AuthStatus.unauth;
     }finally{
@@ -67,9 +77,27 @@ class AuthProvider extends ChangeNotifier{
       _currentUser = await AppwriteService.account.get();
       _authStatus = AuthStatus.auth;
       updateWallet();
+      final userdb = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'users', documentId: _currentUser.$id);
+      print(userdb.data['class']);
+      if (userdb.data['class'] == null){
+        _isFirstLogin = true;
+      }else{
+        _isFirstLogin = false;
+      }
     }finally{
       notifyListeners();
     }
+  }
+
+  void setClass(String className) async{
+    await AppwriteService.database.updateDocument(
+      databaseId: AppwriteService.databaseId, 
+      collectionId: 'users', 
+      documentId: _currentUser.$id,
+      data: {
+        'class': className
+      }
+    );
   }
 
   void logOut() async{

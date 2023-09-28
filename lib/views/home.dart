@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:justitis_app/providers/auth_provider.dart';
@@ -23,16 +24,44 @@ class HomeState extends State<Home>{
 
   final advancedDrawerController = AdvancedDrawerController();
   final appwriteProvider = AuthProvider();
+  final _classInputController = TextEditingController();
 
   void setFCMTkn() async{
     final user = await AppwriteService.account.get();
-    FCMService.setTokenToUser(user.$id);
+    await FCMService.setTokenToUser(user.$id);
   }
 
   @override
   void initState() {
     super.initState();
-    setFCMTkn();
+    //WidgetsBinding.instance.addPostFrameCallback((_) async{
+    //  FCMService();
+    //  await FCMService.getToken();
+    //  setFCMTkn();
+    //});
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      //final bool isFirstLogin = context.watch<AuthProvider>().isFirstLogin;
+      final AuthProvider appwriteProvider = Provider.of<AuthProvider>(context, listen: false);
+      if(appwriteProvider.isFirstLogin){
+        showDialog(context: context, builder: (context) {
+          return AlertDialog(
+            title: const Text('Inserisci la tua classe'),
+            content: TextField(
+              controller: _classInputController,
+              decoration: const InputDecoration(hintText: 'Inserisci la tua classe, es.5AI'),
+            ),
+            actions: [
+              ElevatedButton(onPressed: (){
+                if(_classInputController.text != '' && _classInputController.text.length >= 3){
+                  appwriteProvider.setClass(_classInputController.text.toUpperCase());
+                }
+                Navigator.pop(context);
+              }, child: const Text('Conferma'))
+            ],
+          );
+        });
+      }
+    });
   }
 
   @override
@@ -141,13 +170,6 @@ class HomeState extends State<Home>{
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Il tuo saldo: ${wallet}'),
-              ElevatedButton(onPressed: () => FCMService(), child: const Text('Init')),
-              ElevatedButton(onPressed: (){
-                FCMService.getToken();
-              }, child: const Text('Get token')),
-              ElevatedButton(onPressed: () {
-                setFCMTkn();
-              }, child: const Text('Notifiche'))
             ],
           ),
         )

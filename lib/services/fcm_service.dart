@@ -25,11 +25,11 @@ class FCMService{
     );
   }
 
-  static void getToken() async{
+  static Future getToken() async{
     token = (await messaging.getToken(vapidKey: "BMxkL_37yjIRiVe0j-n-gdxNwT73BRhOY91aiz7v-tM9KgdGmKs9EN7w8uWecmR3BdUUFxm0qhIrBGM8A-VCTtg"))!;
   }
 
-  static void setTokenToUser(String userId) async{
+  static Future setTokenToUser(String userId) async{
     await AppwriteService.functions.createExecution(
       functionId: '650b5d07bcf5bc3a4c8d',
       data: jsonEncode({

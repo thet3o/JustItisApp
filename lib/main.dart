@@ -13,7 +13,11 @@ import 'firebase_options.dart';
 
 void main() async{
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
+  options: const FirebaseOptions(
+    apiKey: 'AIzaSyA99HRQhOpoCTirxZxFEKiGk9uL7PTMvgQ', 
+    appId: '1:977297428392:web:29a7a7a70e4a757c8f579d', 
+    messagingSenderId: '977297428392', 
+    projectId: 'justitis-b275e'),
   );
   AppwriteService();
   runApp(
