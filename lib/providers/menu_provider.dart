@@ -68,6 +68,7 @@ class MenuProvider extends ChangeNotifier{
         'order': jsonOrderData,
         'class': userdb.data['class']
       });
+      print(userdb.data['class']);
       if(userdb.data['class'] != null){
         await AppwriteService.functions.createExecution(
           functionId: '64f1f25f8f2cfaa0d2f7',
