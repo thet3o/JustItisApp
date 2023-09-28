@@ -14,6 +14,7 @@ class AuthProvider extends ChangeNotifier{
   double _wallet = 0.0;
   double _moneyToAdd = 0.0;
   bool _isFirstLogin = true;
+  String _className = '';
 
   AuthStatus _authStatus = AuthStatus.uninit;
 
@@ -23,6 +24,7 @@ class AuthProvider extends ChangeNotifier{
   double get wallet => _wallet;
   double get moneyToAdd => _moneyToAdd;
   bool get isFirstLogin => _isFirstLogin;
+  String get className => _className;
 
   set moneyToAdd(double money) => _moneyToAdd = money;
 
@@ -47,7 +49,6 @@ class AuthProvider extends ChangeNotifier{
       _authStatus = AuthStatus.auth;
       updateWallet();
       final userdb = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'users', documentId: _currentUser.$id);
-      print(userdb.data['class']);
       if (userdb.data['class'] == null){
         _isFirstLogin = true;
       }else{
@@ -78,7 +79,6 @@ class AuthProvider extends ChangeNotifier{
       _authStatus = AuthStatus.auth;
       updateWallet();
       final userdb = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'users', documentId: _currentUser.$id);
-      print(userdb.data['class']);
       if (userdb.data['class'] == null){
         _isFirstLogin = true;
       }else{
@@ -90,14 +90,19 @@ class AuthProvider extends ChangeNotifier{
   }
 
   void setClass(String className) async{
-    await AppwriteService.database.updateDocument(
+    try{
+      await AppwriteService.database.updateDocument(
       databaseId: AppwriteService.databaseId, 
       collectionId: 'users', 
       documentId: _currentUser.$id,
-      data: {
-        'class': className
-      }
-    );
+        data: {
+          'class': className
+        }
+      );
+       _className = className;
+    }finally{
+      notifyListeners();
+    }
   }
 
   void logOut() async{

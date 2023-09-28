@@ -60,17 +60,22 @@ class MenuProvider extends ChangeNotifier{
   // Create and send the order to Appwrite server
   createOrder() async{
     try{
+      final userId = (await AppwriteService.account.get()).$id;
+      final userdb = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'users', documentId: userId);
       final jsonOrderData = jsonEncode(_cart);
       final jsonData = jsonEncode({
-        'userId': (await AppwriteService.account.get()).$id,
-        'order': jsonOrderData
+        'userId': userId,
+        'order': jsonOrderData,
+        'class': userdb.data['class']
       });
-      await AppwriteService.functions.createExecution(
-        functionId: '64f1f25f8f2cfaa0d2f7',
-        data: jsonData
+      if(userdb.data['class'] != null){
+        await AppwriteService.functions.createExecution(
+          functionId: '64f1f25f8f2cfaa0d2f7',
+          data: jsonData
         );
-      _isOrderCreated = true;
-      _cart.clear();
+        _isOrderCreated = true;
+        _cart.clear();
+      }
     }finally{
       notifyListeners();
     }
