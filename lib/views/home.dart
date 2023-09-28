@@ -39,9 +39,14 @@ class HomeState extends State<Home>{
     //  await FCMService.getToken();
     //  setFCMTkn();
     //});
+    //Future.delayed(const Duration(milliseconds: 500), () async{
+    //  FCMService();
+    //  await FCMService.getToken();
+    //  setFCMTkn();
+    //});
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      //final bool isFirstLogin = context.watch<AuthProvider>().isFirstLogin;
-      final AuthProvider appwriteProvider = Provider.of<AuthProvider>(context, listen: false);
+      Future.delayed(const Duration(seconds: 1), (){
+        final AuthProvider appwriteProvider = Provider.of<AuthProvider>(context, listen: false);
       if(appwriteProvider.isFirstLogin){
         showDialog(context: context, builder: (context) {
           return AlertDialog(
@@ -61,6 +66,9 @@ class HomeState extends State<Home>{
           );
         });
       }
+      });
+      //final bool isFirstLogin = context.watch<AuthProvider>().isFirstLogin;
+      
     });
   }
 
