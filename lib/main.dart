@@ -3,22 +3,12 @@ import 'package:justitis_app/providers/auth_provider.dart';
 import 'package:justitis_app/providers/menu_provider.dart';
 import 'package:justitis_app/providers/myorders_provider.dart';
 import 'package:justitis_app/services/appwrite_service.dart';
-import 'package:justitis_app/services/fcm_service.dart';
 import 'package:justitis_app/views/home.dart';
 import 'package:justitis_app/views/login.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 
-void main() async{
-  await Firebase.initializeApp(
-  options: const FirebaseOptions(
-    apiKey: 'AIzaSyA99HRQhOpoCTirxZxFEKiGk9uL7PTMvgQ', 
-    appId: '1:977297428392:web:29a7a7a70e4a757c8f579d', 
-    messagingSenderId: '977297428392', 
-    projectId: 'justitis-b275e'),
-  );
+void main(){
   AppwriteService();
   runApp(
     MultiProvider(
@@ -37,11 +27,10 @@ class JustItisApp extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final authStatus = context.watch<AuthProvider>().authStatus;
     return MaterialApp(
       title: 'JustItisApp',
       debugShowCheckedModeBanner: false,
-      home: (authStatus == AuthStatus.auth)?const Home():const Login(),
+      home: (Provider.of<AuthProvider>(context).authStatus == AuthStatus.auth)? const Home() : const Login(),
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Colors.orange,

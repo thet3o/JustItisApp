@@ -15,7 +15,6 @@ class Menu extends StatefulWidget{
 class MenuState extends State<Menu>{
   @override
   Widget build(BuildContext context) {
-    final menuProvider = context.read<MenuProvider>();
     final cart = context.watch<MenuProvider>().cart;
     return Scaffold(
       appBar: AppBar(

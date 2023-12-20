@@ -13,7 +13,6 @@ class AuthProvider extends ChangeNotifier{
 
   double _wallet = 0.0;
   double _moneyToAdd = 0.0;
-  bool _isFirstLogin = true;
   String _className = '';
 
   //late List<DropdownMenuItem<String>> classItems;
@@ -25,25 +24,17 @@ class AuthProvider extends ChangeNotifier{
   AuthStatus get authStatus => _authStatus;
   double get wallet => _wallet;
   double get moneyToAdd => _moneyToAdd;
-  bool get isFirstLogin => _isFirstLogin;
   String get className => _className;
 
   set moneyToAdd(double money) => _moneyToAdd = money;
 
 
   //Appwrite constants
-
-  // Remote Server
-  // final String userCollectionId = '64d295100d412a890d19';
-  // final String _successRedirectUrl = 'https://test.justitis.it/auth.html';
-
-  //Local Server
   final String _userCollectionId = 'users';
   final String _successRedirectUrl = 'http://justitis.it/auth.html';
 
   AuthProvider(){
     checkIfLogged();
-    //classesList();
   }
 
   void checkIfLogged() async{
@@ -52,12 +43,8 @@ class AuthProvider extends ChangeNotifier{
       _authStatus = AuthStatus.auth;
       updateWallet();
       final userdb = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'users', documentId: _currentUser.$id);
-      if (userdb.data['class'] == null){
-        _isFirstLogin = true;
-      }else{
-        _isFirstLogin = false;
+      if (!(userdb.data['class'] == null)){
         _className = userdb.data['class'];
-        print(className);
       }
     }catch(e){
       _authStatus = AuthStatus.unauth;
@@ -83,12 +70,6 @@ class AuthProvider extends ChangeNotifier{
       _currentUser = await AppwriteService.account.get();
       _authStatus = AuthStatus.auth;
       updateWallet();
-      final userdb = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'users', documentId: _currentUser.$id);
-      if (userdb.data['class'] == null){
-        _isFirstLogin = true;
-      }else{
-        _isFirstLogin = false;
-      }
     }finally{
       notifyListeners();
     }
@@ -137,9 +118,4 @@ class AuthProvider extends ChangeNotifier{
       notifyListeners();
     }
   }
-
-  //void getUserClass() async{
-  //  final userdb = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'users', documentId: currentUser.$id);
-  //  _className = userdb.data['class'];
-  //}
 }

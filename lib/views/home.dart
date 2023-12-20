@@ -78,12 +78,25 @@ class HomeState extends State<Home>{
               ListTile(
                 onTap: () {
                   advancedDrawerController.hideDrawer();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const Menu()));
+                  if(Provider.of<AuthProvider>(context, listen: false).className.isEmpty){
+                    showDialog(context: context, builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Classe mancante'),
+                        content: const Text('Non hai ancora selezionato la classe a cui appartieni, per far ciò vai su "Imposta classe"'),
+                        actions: [
+                          ElevatedButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))
+                        ],
+                      );
+                    });
+                  }else{
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Menu()));
+                  }
                 },
                 leading: const FaIcon(FontAwesomeIcons.pizzaSlice),
                 title: const Text('Ordina'),
               ),
               ListTile(
+                enabled: false,
                 onTap: () {
                   advancedDrawerController.hideDrawer();
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const Wallet()));
@@ -97,18 +110,23 @@ class HomeState extends State<Home>{
                   final items = await appwriteProvider.classesList();
                   if(!context.mounted) return;
                   showDialog(context: context, builder: (context){
-                    String? currentValue = Provider.of<AuthProvider>(context, listen: false).className;
+                    String currentValue = Provider.of<AuthProvider>(context, listen: false).className;
+                    String? currentItem = (currentValue.isNotEmpty)?currentValue:null;
                     return AlertDialog(
                       title: const Text('Seleziona la tua classe'),
                       content: DropdownButton(
-                        value: currentValue,
+                        hint: const Text('Classe'),
+                        value: currentItem,
                         items: items,
                         onChanged: (value) {
                           Provider.of<AuthProvider>(context, listen: false).setClassItem(value!);
                         },
                       ),
                       actions: [
-                        ElevatedButton(onPressed: () => Navigator.pop(context), child: const Text('Cancella')),
+                        ElevatedButton(onPressed: () {
+                          Provider.of<AuthProvider>(context, listen: false).setClassItem('');
+                          Navigator.pop(context);
+                        }, child: const Text('Cancella')),
                         ElevatedButton(onPressed: () {
                           Provider.of<AuthProvider>(context, listen: false).setClass();
                           Navigator.pop(context);
