@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:justitis_app/providers/auth_provider.dart';
 import 'package:justitis_app/providers/myorders_provider.dart';
 import 'package:justitis_app/services/appwrite_service.dart';
-import 'package:justitis_app/services/fcm_service.dart';
 import 'package:justitis_app/views/login.dart';
 import 'package:justitis_app/views/myorders.dart';
 import 'package:justitis_app/views/wallet.dart';
@@ -23,60 +21,10 @@ class Home extends StatefulWidget{
 class HomeState extends State<Home>{
 
   final advancedDrawerController = AdvancedDrawerController();
-  final appwriteProvider = AuthProvider();
-  final _classInputController = TextEditingController();
-
-  void setFCMTkn() async{
-    final user = await AppwriteService.account.get();
-    await FCMService.setTokenToUser(user.$id);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    //WidgetsBinding.instance.addPostFrameCallback((_) async{
-    //  FCMService();
-    //  await FCMService.getToken();
-    //  setFCMTkn();
-    //});
-    //Future.delayed(const Duration(milliseconds: 500), () async{
-    //  FCMService();
-    //  await FCMService.getToken();
-    //  setFCMTkn();
-    //});
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(seconds: 1), (){
-        final AuthProvider appwriteProvider = Provider.of<AuthProvider>(context, listen: false);
-      if(appwriteProvider.isFirstLogin){
-        showDialog(context: context, builder: (context) {
-          return AlertDialog(
-            title: const Text('Inserisci la tua classe'),
-            content: TextField(
-              controller: _classInputController,
-              decoration: const InputDecoration(hintText: 'Inserisci la tua classe, es.5AI'),
-            ),
-            actions: [
-              ElevatedButton(onPressed: (){
-                if(_classInputController.text != '' && _classInputController.text.length >= 3){
-                  appwriteProvider.setClass(_classInputController.text.toUpperCase());
-                }
-                Navigator.pop(context);
-              }, child: const Text('Conferma'))
-            ],
-          );
-        });
-      }
-      });
-      //final bool isFirstLogin = context.watch<AuthProvider>().isFirstLogin;
-      
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     final AuthProvider appwriteProvider = context.read<AuthProvider>();
-    final double wallet = context.watch<AuthProvider>().wallet;
-    final myOrdersProvider = context.read<MyOrdersProvider>();
     return AdvancedDrawer(
       controller: advancedDrawerController,
       animationCurve: Curves.easeInOutCubicEmphasized,
@@ -96,69 +44,96 @@ class HomeState extends State<Home>{
         ),
       ),
       drawer: SafeArea(
-        child: Container(
-          child: ListTileTheme(
-            textColor: Colors.white,
-            iconColor: Colors.white,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Container(
-                  width: 128,
-                  height: 128,
-                  margin: const EdgeInsets.only(top: 24, bottom: 64),
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(
-                    color: Colors.black26,
-                    shape: BoxShape.circle,
-                  ),
-                  child: FutureBuilder(
-                    future: AppwriteService.avatar.getInitials(),
-                    builder: (context, snapshot) {
-                      return snapshot.hasData && snapshot.data != null ? Image.memory(snapshot.data!) : const CircularProgressIndicator();
-                    },
-                  )
+        child: ListTileTheme(
+          textColor: Colors.white,
+          iconColor: Colors.white,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                width: 128,
+                height: 128,
+                margin: const EdgeInsets.only(top: 24, bottom: 64),
+                clipBehavior: Clip.antiAlias,
+                decoration: const BoxDecoration(
+                  color: Colors.black26,
+                  shape: BoxShape.circle,
                 ),
-                ListTile(
-                  onTap: () {
-                    advancedDrawerController.hideDrawer();
-                    myOrdersProvider.updateOrdersList();
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const MyOrders()));
+                child: FutureBuilder(
+                  future: AppwriteService.avatar.getInitials(),
+                  builder: (context, snapshot) {
+                    return snapshot.hasData && snapshot.data != null ? Image.memory(snapshot.data!) : const CircularProgressIndicator();
                   },
-                  leading: const FaIcon(FontAwesomeIcons.utensils),
-                  title: const Text('I miei ordini'),
-                ),
-                ListTile(
-                  onTap: () {
-                    advancedDrawerController.hideDrawer();
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Menu()));
-                  },
-                  leading: const FaIcon(FontAwesomeIcons.pizzaSlice),
-                  title: const Text('Ordina'),
-                ),
-                ListTile(
-                  onTap: () {
-                    advancedDrawerController.hideDrawer();
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Wallet()));
-                  },
-                  leading: const FaIcon(FontAwesomeIcons.wallet),
-                  title: const Text('Wallet'),
-                ),
-                ListTile(
-                  onTap: (){
-                    try{
-                      appwriteProvider.logOut();
-                    }finally{
-                      if(appwriteProvider.authStatus == AuthStatus.unauth){
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Login()));
-                      }
+                )
+              ),
+              ListTile(
+                onTap: () {
+                  advancedDrawerController.hideDrawer();
+                  Provider.of<MyOrdersProvider>(context, listen: false).updateOrdersList();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const MyOrders()));
+                },
+                leading: const FaIcon(FontAwesomeIcons.utensils),
+                title: const Text('I miei ordini'),
+              ),
+              ListTile(
+                onTap: () {
+                  advancedDrawerController.hideDrawer();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const Menu()));
+                },
+                leading: const FaIcon(FontAwesomeIcons.pizzaSlice),
+                title: const Text('Ordina'),
+              ),
+              ListTile(
+                onTap: () {
+                  advancedDrawerController.hideDrawer();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const Wallet()));
+                },
+                leading: const FaIcon(FontAwesomeIcons.wallet),
+                title: const Text('Wallet'),
+              ),
+              ListTile(
+                onTap: () async{
+                  advancedDrawerController.hideDrawer();
+                  final items = await appwriteProvider.classesList();
+                  if(!context.mounted) return;
+                  showDialog(context: context, builder: (context){
+                    String? currentValue = Provider.of<AuthProvider>(context, listen: false).className;
+                    return AlertDialog(
+                      title: const Text('Seleziona la tua classe'),
+                      content: DropdownButton(
+                        value: currentValue,
+                        items: items,
+                        onChanged: (value) {
+                          Provider.of<AuthProvider>(context, listen: false).setClassItem(value!);
+                        },
+                      ),
+                      actions: [
+                        ElevatedButton(onPressed: () => Navigator.pop(context), child: const Text('Cancella')),
+                        ElevatedButton(onPressed: () {
+                          Provider.of<AuthProvider>(context, listen: false).setClass();
+                          Navigator.pop(context);
+                        }, child: const Text('Imposta'))
+                      ],
+                    );
+                  });
+                },
+                leading: const FaIcon(FontAwesomeIcons.school),
+                title: const Text('Imposta classe'),
+              ),
+              ListTile(
+                onTap: (){
+                  try{
+                    appwriteProvider.logOut();
+                  }finally{
+                    if(appwriteProvider.authStatus == AuthStatus.unauth){
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Login()));
                     }
-                  },
-                  leading: const FaIcon(FontAwesomeIcons.rightFromBracket),
-                  title: const Text('Logout'),
-                ),
-              ],
-            ),
+                  }
+                },
+                leading: const FaIcon(FontAwesomeIcons.rightFromBracket),
+                title: const Text('Logout'),
+              ),
+            ],
           ),
         ),
       ),
@@ -177,7 +152,7 @@ class HomeState extends State<Home>{
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Il tuo saldo: ${wallet}'),
+              Text('Il tuo saldo: ${Provider.of<AuthProvider>(context, listen:false).wallet}'),
             ],
           ),
         )

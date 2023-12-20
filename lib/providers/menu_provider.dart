@@ -28,6 +28,8 @@ class MenuProvider extends ChangeNotifier{
   List<Ingredient> get orderFillings => _orderFillings;
   List<Ingredient> get orderAdditions => _orderAdditions;
 
+  
+  bool onTime = false;
 
   bool _isOrderCreated = false;
   bool get isOrderCreated => _isOrderCreated;
@@ -45,6 +47,13 @@ class MenuProvider extends ChangeNotifier{
 
   updateIngredients(List<IngredientCategory> categories) async{
     try{
+      bool startTime = (DateTime.now().hour >= 7 && DateTime.now().minute > 30);
+      bool endTime = (DateTime.now().hour <= 9 && DateTime.now().minute <= 30);
+      if(startTime && endTime){
+        onTime = true;
+      }else{
+        onTime = false;
+      }
       final ingredients = await AppwriteService.database.listDocuments(databaseId: 'justitisdb', collectionId: 'ingredients');
       _ingredients.clear();
       _availableAdditions.clear();
@@ -60,6 +69,7 @@ class MenuProvider extends ChangeNotifier{
   // Create and send the order to Appwrite server
   createOrder() async{
     try{
+      if(!onTime) return;
       final userId = (await AppwriteService.account.get()).$id;
       final userdb = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'users', documentId: userId);
       final jsonOrderData = jsonEncode(_cart);

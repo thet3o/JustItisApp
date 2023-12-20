@@ -16,6 +16,8 @@ class AuthProvider extends ChangeNotifier{
   bool _isFirstLogin = true;
   String _className = '';
 
+  //late List<DropdownMenuItem<String>> classItems;
+
   AuthStatus _authStatus = AuthStatus.uninit;
 
   // Getter
@@ -41,6 +43,7 @@ class AuthProvider extends ChangeNotifier{
 
   AuthProvider(){
     checkIfLogged();
+    //classesList();
   }
 
   void checkIfLogged() async{
@@ -53,6 +56,8 @@ class AuthProvider extends ChangeNotifier{
         _isFirstLogin = true;
       }else{
         _isFirstLogin = false;
+        _className = userdb.data['class'];
+        print(className);
       }
     }catch(e){
       _authStatus = AuthStatus.unauth;
@@ -89,17 +94,36 @@ class AuthProvider extends ChangeNotifier{
     }
   }
 
-  void setClass(String className) async{
+   Future<List<DropdownMenuItem<String>>> classesList() async{
+    List<DropdownMenuItem<String>> classesItem = [];
+    try{
+      final classes = await AppwriteService.database.listDocuments(databaseId: AppwriteService.databaseId, collectionId: 'classes');
+      for (var element in classes.documents) {
+        classesItem.add(DropdownMenuItem(value: element.data['class'], child: Text(element.data['class'])));
+      }
+      return classesItem;
+    }finally{
+      notifyListeners();
+    }
+  }
+
+  void setClassItem(String classItemValue){
+    try{
+      _className = classItemValue;
+    }finally{notifyListeners();}
+    
+  }
+
+  void setClass() async{
     try{
       await AppwriteService.database.updateDocument(
       databaseId: AppwriteService.databaseId, 
       collectionId: 'users', 
       documentId: _currentUser.$id,
         data: {
-          'class': className
+          'class': _className
         }
       );
-       _className = className;
     }finally{
       notifyListeners();
     }
@@ -113,4 +137,9 @@ class AuthProvider extends ChangeNotifier{
       notifyListeners();
     }
   }
+
+  //void getUserClass() async{
+  //  final userdb = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'users', documentId: currentUser.$id);
+  //  _className = userdb.data['class'];
+  //}
 }
