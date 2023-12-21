@@ -55,6 +55,7 @@ class MenuProvider extends ChangeNotifier{
         onTime = false;
       }
       final ingredients = await AppwriteService.database.listDocuments(databaseId: 'justitisdb', collectionId: 'ingredients');
+      
       _ingredients.clear();
       _availableAdditions.clear();
       _availableFillings.clear();
@@ -81,7 +82,7 @@ class MenuProvider extends ChangeNotifier{
       print(userdb.data['class']);
       if(userdb.data['class'] != null){
         await AppwriteService.functions.createExecution(
-          functionId: '64f1f25f8f2cfaa0d2f7',
+          functionId: '65845986905c0ee440c2',
           data: jsonData
         );
         _isOrderCreated = true;
