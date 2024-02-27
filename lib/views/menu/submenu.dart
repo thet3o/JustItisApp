@@ -5,7 +5,7 @@ import 'package:justitis_app/providers/menu_provider.dart';
 import 'package:justitis_app/views/menu/customization.dart';
 import 'package:provider/provider.dart';
 
-class SubMenu extends StatefulWidget{
+class SubMenu extends StatefulWidget {
   final List<IngredientCategory> categories;
 
   const SubMenu({super.key, required this.categories});
@@ -14,7 +14,7 @@ class SubMenu extends StatefulWidget{
   SubMenuState createState() => SubMenuState();
 }
 
-class SubMenuState extends State<SubMenu>{
+class SubMenuState extends State<SubMenu> {
   @override
   Widget build(BuildContext context) {
     final MenuProvider menuProvider = context.read<MenuProvider>();
@@ -36,26 +36,37 @@ class SubMenuState extends State<SubMenu>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ListView.builder(
+            Expanded(
+                child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              physics: const BouncingScrollPhysics(
+                  decelerationRate: ScrollDecelerationRate.normal),
               shrinkWrap: true,
               itemCount: ingredients.length,
               itemBuilder: (context, index) {
                 return Card(
                   child: ListTile(
                     onTap: () {
-                      if(IngredientCategory.values[ingredients[index].productType.idProductType] != IngredientCategory.panino){
+                      if (IngredientCategory.values[
+                              ingredients[index].productType.idProductType] !=
+                          IngredientCategory.panino) {
                         menuProvider.addOrder(ingredients[index]);
                         Navigator.pop(context);
-                      }else{
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Customization(mainProduct: ingredients[index])));
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Customization(
+                                    mainProduct: ingredients[index])));
                       }
                     },
                     title: Text(ingredients[index].name),
-                    subtitle: Text(NumberFormat.currency(locale:'eu').format(ingredients[index].price)),
+                    subtitle: Text(NumberFormat.currency(locale: 'eu')
+                        .format(ingredients[index].price)),
                   ),
                 );
               },
-            )
+            ))
           ],
         ),
       ),
