@@ -70,7 +70,7 @@ class MenuProvider extends ChangeNotifier{
   // Create and send the order to Appwrite server
   createOrder() async{
     try{
-      if(!onTime) return;
+      //if(!onTime) return;
       final userId = (await AppwriteService.account.get()).$id;
       final userdb = await AppwriteService.database.getDocument(databaseId: AppwriteService.databaseId, collectionId: 'users', documentId: userId);
       final jsonOrderData = jsonEncode(_cart);
