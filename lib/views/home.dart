@@ -22,6 +22,12 @@ class HomeState extends State<Home> {
   final advancedDrawerController = AdvancedDrawerController();
 
   @override
+  void initState() {
+    super.initState();
+    Provider.of<MenuProvider>(context, listen: false).checkIfOnTime();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final AuthProvider appwriteProvider = context.read<AuthProvider>();
     return AdvancedDrawer(

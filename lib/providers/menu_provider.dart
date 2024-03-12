@@ -58,7 +58,7 @@ class MenuProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateIngredients(List<IngredientCategory> categories) async {
+  checkIfOnTime() async {
     try {
       bool startTime = (DateTime.now().hour >= 7 && DateTime.now().minute > 30);
       bool endTime = (DateTime.now().hour <= 9 && DateTime.now().minute <= 30);
@@ -67,6 +67,14 @@ class MenuProvider extends ChangeNotifier {
       } else {
         onTime = false;
       }
+      onTime = true;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  updateIngredients(List<IngredientCategory> categories) async {
+    try {
       final ingredients = await AppwriteService.database.listDocuments(
           databaseId: 'justitisdb',
           collectionId: 'ingredients',
