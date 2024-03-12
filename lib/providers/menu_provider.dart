@@ -38,6 +38,9 @@ class MenuProvider extends ChangeNotifier {
   bool _isOrderCreated = false;
   bool get isOrderCreated => _isOrderCreated;
 
+  bool _waitToSendOrder = false;
+  bool get waitToSendOrder => _waitToSendOrder;
+
   // Add Order to cart
   addOrder(Ingredient mainProduct,
       {List<Ingredient> fillings = const [],
@@ -94,6 +97,11 @@ class MenuProvider extends ChangeNotifier {
     }
   }
 
+  void sendOrderProgress(bool status) {
+    _waitToSendOrder = status;
+    notifyListeners();
+  }
+
   // Create and send the order to Appwrite server
   createOrder() async {
     try {
@@ -109,13 +117,13 @@ class MenuProvider extends ChangeNotifier {
         'order': jsonOrderData,
         'class': userdb.data['class']
       });
-      print(userdb.data['class']);
       if (userdb.data['class'] != null) {
         await AppwriteService.functions.createExecution(
             functionId: '65845986905c0ee440c2', data: jsonData);
         _isOrderCreated = true;
         _cart.clear();
       }
+      _waitToSendOrder = false;
     } finally {
       notifyListeners();
     }
