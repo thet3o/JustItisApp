@@ -16,10 +16,18 @@ class SubMenu extends StatefulWidget {
 
 class SubMenuState extends State<SubMenu> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<MenuProvider>().updateIngredients(widget.categories);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final MenuProvider menuProvider = context.read<MenuProvider>();
     final ingredients = context.watch<MenuProvider>().ingredients;
-    menuProvider.updateIngredients(widget.categories);
+    //final ingredients = Provider.of<MenuProvider>(context, listen: false).ingredients;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ordina'),

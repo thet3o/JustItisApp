@@ -24,12 +24,17 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    Provider.of<MenuProvider>(context, listen: false).checkIfOnTime();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<MenuProvider>().checkIfOnTime();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final AuthProvider appwriteProvider = context.read<AuthProvider>();
+    //final MenuProvider menuProvider = context.read<MenuProvider>();
+    //Provider.of<MenuProvider>(context, listen: true).checkIfOnTime();
+    //menuProvider.checkIfOnTime();
     return AdvancedDrawer(
       controller: advancedDrawerController,
       animationCurve: Curves.easeInOutCubicEmphasized,
@@ -86,6 +91,7 @@ class HomeState extends State<Home> {
               ListTile(
                 onTap: () {
                   advancedDrawerController.hideDrawer();
+                  //menuProvider.checkIfOnTime();
                   if (Provider.of<AuthProvider>(context, listen: false)
                       .className
                       .isEmpty) {

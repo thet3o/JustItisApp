@@ -80,9 +80,9 @@ class MenuProvider extends ChangeNotifier {
           collectionId: 'ingredients',
           queries: [Query.limit(1000)]);
 
-      _ingredients.clear();
-      _availableAdditions.clear();
-      _availableFillings.clear();
+      _ingredients = [];
+      _availableAdditions = [];
+      _availableFillings = [];
       _ingredients = ingredients.documents
           .map((e) => Ingredient.fromJson(e.data))
           .where((element) => categories.contains(
@@ -100,6 +100,16 @@ class MenuProvider extends ChangeNotifier {
               IngredientCategory.aggiunte.index ==
               element.productType.idProductType)
           .toList();
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  clearIngredients() async {
+    try {
+      _ingredients = [];
+      _availableAdditions = [];
+      _availableFillings = [];
     } finally {
       notifyListeners();
     }
