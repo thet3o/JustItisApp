@@ -45,12 +45,17 @@ class MenuProvider extends ChangeNotifier {
   addOrder(Ingredient mainProduct,
       {List<Ingredient> fillings = const [],
       List<Ingredient> additions = const []}) {
-    int groupId = (_cart.isEmpty) ? 0 : _cart.length - 1;
-    _cart.add(Order(
-        groupId: groupId,
-        mainProduct: mainProduct,
-        fillings: fillings,
-        additions: additions));
+    try {
+      if (_cart.length + 1 > 15) return;
+      int groupId = (_cart.isEmpty) ? 0 : _cart.length - 1;
+      _cart.add(Order(
+          groupId: groupId,
+          mainProduct: mainProduct,
+          fillings: fillings,
+          additions: additions));
+    } finally {
+      notifyListeners();
+    }
   }
 
   deleteOrder(int index) {
