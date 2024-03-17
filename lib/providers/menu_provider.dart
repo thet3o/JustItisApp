@@ -72,7 +72,6 @@ class MenuProvider extends ChangeNotifier {
       } else {
         onTime = false;
       }
-      onTime = true;
     } finally {
       notifyListeners();
     }
