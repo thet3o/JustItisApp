@@ -65,8 +65,10 @@ class MenuProvider extends ChangeNotifier {
 
   checkIfOnTime() async {
     try {
-      bool startTime = (DateTime.now().hour >= 7 && DateTime.now().minute > 30);
+      bool startTime = (DateTime.now().hour >= 7);
       bool endTime = (DateTime.now().hour <= 9 && DateTime.now().minute <= 30);
+      print(startTime);
+      print(endTime);
       if (startTime && endTime) {
         onTime = true;
       } else {
